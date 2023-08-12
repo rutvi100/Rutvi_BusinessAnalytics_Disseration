@@ -1,0 +1,136 @@
+vars:
+  - config/global/dvc_params.yaml
+stages:
+  write_all_officer_appointments:
+    cmd: python src/scripts/write_officer_appointments.py
+    deps:
+      - ${OFFICER_APPOINTMENTS_FILES}
+    outs:
+      - ${OFFICER_APPOINTMENTS}
+
+  write_all_officer_service_address_appointments:
+    cmd: python src/scripts/write_officer_service_address.py
+    deps:
+      - ${OFFICER_APPOINTMENTS_FILES}
+    outs:
+      - ${OFFICER_SERVICE_ADDRESS_APPOINTMENTS}
+
+  download_gb_policies_and_statuses:
+    cmd: python src/scripts/download_gb_policies.py
+    deps:
+      - ${DATE_PNP_DATASET_LATEST_POLICY}
+    outs:
+      - ${ALL_GB_POLICIES}
+
+  label_policies:
+    cmd: python src/scripts/label_gb_policies.py
+    deps:
+      - ${ALL_GB_POLICIES}
+    outs:
+      - ${LABELED_GB_POLICIES}
+      - ${EARLIEST_CO_OBSERVATION}
+
+  get_bad_companies:
+    cmd: python src/utils/write_companies_of_label_type.py --label_type bad
+    deps:
+      - ${LABELED_GB_POLICIES}
+    outs:
+      - ${UNIQUE_LIST_BAD_COMPANIES}
+
+  get_good_companies:
+    cmd: python src/utils/write_companies_of_label_type.py --label_type good
+    deps:
+      - ${LABELED_GB_POLICIES}
+    outs:
+      - ${UNIQUE_LIST_GOOD_COMPANIES}
+
+  get_bad_officers:
+    cmd: python src/scripts/write_officers_of_particular_label_type.py --label_type bad
+    deps:
+      - ${UNIQUE_LIST_BAD_COMPANIES}
+      - ${DUEDIL_OLD_NEW_OFFICER_NUMBERS}
+    outs:
+      - ${BAD_COMPANY_OFFICER_NUMBER}
+
+  get_good_officers:
+    cmd: python src/scripts/write_officers_of_particular_label_type.py --label_type good
+    deps:
+      - ${UNIQUE_LIST_GOOD_COMPANIES}
+      - ${DUEDIL_OLD_NEW_OFFICER_NUMBERS}
+    outs:
+      - ${GOOD_COMPANY_OFFICER_NUMBER}
+
+  get_bad_officer_other_appointments:
+    cmd: python src/scripts/write_officer_appointments_for_label_type.py --label_type bad
+    deps:
+      - ${BAD_COMPANY_OFFICER_NUMBER}
+    outs:
+      - ${BAD_OFFICER_OTHER_APPOINTMENTS}
+
+  get_good_officer_other_appointments:
+    cmd: python src/scripts/write_officer_appointments_for_label_type.py --label_type good
+    deps:
+      - ${GOOD_COMPANY_OFFICER_NUMBER}
+    outs:
+      - ${GOOD_OFFICER_OTHER_APPOINTMENTS}
+
+  combine_officer_appointments_datasets:
+    cmd: python src/scripts/combine_officer_appointments_datasets.py
+    deps:
+      - ${GOOD_OFFICER_OTHER_APPOINTMENTS}
+      - ${BAD_OFFICER_OTHER_APPOINTMENTS}
+    outs:
+      - ${OFFICER_OTHER_APPOINTMENTS}
+
+  drop_current_appointment_from_other_appointments:
+    cmd: python src/scripts/drop_current_appointment_from_other_appointments.py
+    deps:
+      - ${OFFICER_OTHER_APPOINTMENTS}
+    outs:
+      - ${OFFICER_CURRENT_OTHER_APPOINTMENTS}
+
+  get_officer_other_appointments_info:
+    cmd: python src/scripts/get_officer_other_appointments_information.py
+    deps:
+      - ${OFFICER_CURRENT_OTHER_APPOINTMENTS}
+    outs:
+      - ${OTHER_APPOINTMENT_COMPANY_INFO_DIRECTORY}
+
+  get_officer_current_appointments_info:
+    cmd: python src/scripts/get_officer_current_appointments_information.py
+    deps:
+      - ${OFFICER_CURRENT_OTHER_APPOINTMENTS}
+    outs:
+      - ${CURRENT_APPOINTMENT_COMPANY_INFO_DIRECTORY}
+
+  build_officer_attributes:
+    cmd: python src/scripts/build_officer_attributes.py
+    deps:
+      - ${OTHER_APPOINTMENT_COMPANY_INFO_DIRECTORY}
+      - ${OFFICER_CURRENT_OTHER_APPOINTMENTS}
+      - ${CURRENT_APPOINTMENT_COMPANY_INFO_DIRECTORY}
+    outs:
+      - ${OFFICER_ATTRIBUTES_DIRECTORY}
+      - ${NO_OTHER_APPOINTMENTS_DIRECTORY}
+
+  build_officer_features:
+    cmd: python src/scripts/build_officer_features.py
+    deps:
+      - ${OFFICER_ATTRIBUTES_DIRECTORY}
+    outs:
+      - ${OFFICER_FEATURES_DIRECTORY}
+
+  flatten_officer_features:
+    cmd: python src/scripts/flatten_features.py
+    deps:
+      - ${OFFICER_FEATURES_DIRECTORY}
+    outs:
+      - ${OFFICER_FEATURE_DATASET}
+
+  split_model_backtest_data:
+    cmd: python src/scripts/split_data_model_backtest.py
+    deps:
+      - ${OFFICER_FEATURE_DATASET
+    outs:
+      - ${MODELLING_DATASET}
+      - ${BACKTESTING_DATASET}
