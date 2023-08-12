@@ -1,0 +1,33 @@
+OFFICER_APPOINTMENTS_FILES: "data/pnp_officer_appointment_files/"
+OFFICER_APPOINTMENTS: "data/companies_from_officer_appointments.csv"
+OFFICER_SERVICE_ADDRESS_APPOINTMENTS: "data/officer_service_address_appointments.csv"
+DATE_PNP_DATASET_LATEST_POLICY: "data/gb_policy_date.txt"
+ALL_GB_POLICIES: "data/all_gb_policies.csv"
+EARLIEST_CO_OBSERVATION : "data/earliest_company_observation_dates.csv"
+LABELED_GB_POLICIES: "data/gb_policies_labelled.csv"
+
+BAD_LABEL : 1
+UNIQUE_LIST_BAD_COMPANIES: "data/unique_list_bad_companies.csv"
+BAD_COMPANY_OFFICER_NUMBER: "data/bad_company_officer_role_number.csv"
+BAD_OFFICER_OTHER_APPOINTMENTS: "data/bad_officer_appointments.csv"
+
+GOOD_LABEL : 0
+UNIQUE_LIST_GOOD_COMPANIES: "data/unique_list_good_companies.csv"
+GOOD_COMPANY_OFFICER_NUMBER: "data/good_company_officer_role_number.csv"
+GOOD_OFFICER_OTHER_APPOINTMENTS: "data/good_officer_appointments.csv"
+
+
+OFFICER_OTHER_APPOINTMENTS: "data/officer_appointments.csv"
+OFFICER_CURRENT_OTHER_APPOINTMENTS: "data/officer_current_other_appointments.csv"
+
+OTHER_APPOINTMENT_COMPANY_INFO_DIRECTORY: "data/officer_other_appointment_company_information/"
+CURRENT_APPOINTMENT_COMPANY_INFO_DIRECTORY: "data/officer_current_appointment_company_information/"
+NO_OTHER_APPOINTMENTS_DIRECTORY: "data/no_other_appointments_for_attributes/"
+OFFICER_ATTRIBUTES_DIRECTORY: "data/officer_attribute_store/"
+OFFICER_FEATURES_DIRECTORY: "data/officer_feature_store/"
+OFFICER_FLATTENED_FEATURES: "data/officer_flattened_features.csv"
+OFFICER_FEATURE_DATASET: "data/officer_features_dataset.csv"
+MODELLING_DATASET: "data/modelling_officer_dataset.csv"
+BACKTESTING_DATASET: "data/backtesting_officer_dataset.csv"
+
+DUEDIL_OLD_NEW_OFFICER_NUMBERS : "data/old_duedil_officer_number_to_new.csv"
